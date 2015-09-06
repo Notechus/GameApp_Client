@@ -3,6 +3,7 @@ package gameEngine;
 import graphicEngine.VertexArrayObject;
 import input.KeyboardInput;
 import math.Vector3f;
+import networking.Input;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -14,6 +15,9 @@ public class Paddle extends GameObject {
     private VertexArrayObject vao;
 
     private Vector3f position;
+
+    //client-side
+    private Input input;
 
     private float[] vertices = {
         0.0f, 0.25f, 0f,
@@ -32,20 +36,46 @@ public class Paddle extends GameObject {
         this.position = new Vector3f();
         vao = new VertexArrayObject(this.vertices, this.indices);
         this.setVaoID(vao.getVaoID());
+        this.input = new Input();
     }
 
     public void update() {
-        if (KeyboardInput.isKeyDown(GLFW_KEY_W) && position.getY() <= 0.73f) {
-            position.setY(position.getY() + 0.01f);
+
+        if (KeyboardInput.isKeyDown(GLFW_KEY_W) && position.getY() <= 0.735f) {
+            try {
+                position.setY(position.getY() + 0.01f);
+                input.setUp(true);
+            } finally {
+                input.setUp(false);
+            }
         }
+
         if (KeyboardInput.isKeyDown(GLFW_KEY_S) && position.getY() >= -0.99f) {
-            position.setY(position.getY() - 0.01f);
+            try {
+                position.setY(position.getY() - 0.01f);
+                input.setDown(true);
+                //System.out.println("down we go");
+            } finally {
+                //input.setDown(false);
+            }
         }
-        if (KeyboardInput.isKeyDown(GLFW_KEY_A) && position.getX() <= 0.73f) {
-            position.setX(position.getX() + 0.01f);
+
+        if (KeyboardInput.isKeyDown(GLFW_KEY_D) && position.getX() <= 0.94f) {
+            try {
+                position.setX(position.getX() + 0.01f);
+                input.setRight(true);
+            } finally {
+                input.setRight(false);
+            }
         }
+
         if (KeyboardInput.isKeyDown(GLFW_KEY_A) && position.getX() >= -0.99f) {
-            position.setX(position.getX() - 0.01f);
+            try {
+                position.setX(position.getX() - 0.01f);
+                input.setLeft(true);
+            } finally {
+                input.setLeft(false);
+            }
         }
     }
 
@@ -55,5 +85,13 @@ public class Paddle extends GameObject {
 
     public void setPosition(Vector3f position) {
         this.position = position;
+    }
+
+    public Input getInput() {
+        return input;
+    }
+
+    public void setInput(Input input) {
+        this.input = input;
     }
 }

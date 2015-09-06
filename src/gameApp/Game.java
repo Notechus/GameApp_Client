@@ -32,7 +32,6 @@ public class Game {
     //Input for networking packet
     private Input input;
     private UDPClient client;
-    private static final float PACKET_INTERVAL = 1000 / 30; //close to 30 per sec
 
     //to trace packet rate
     private long firstPacketTime = 0L;
@@ -137,7 +136,7 @@ public class Game {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glClearColor(1.0f, 1.0f, 1.0f, 1.0f); //white
         glClearColor(0.39f, 0.58f, 0.92f, 1.0f); //blue
-        //draw paddle object
+        //draw level object
         level1.draw();
 
         glfwSwapBuffers(windowID);
@@ -149,11 +148,6 @@ public class Game {
         glfwPollEvents();
 
         level1.update();
-
-        /*if (KeyboardInput.isKeyDown(GLFW_KEY_SPACE)) {
-         System.out.println("you jumped");
-         input.setSpace(true);
-         }*/
     }
 
     public void loop() {
@@ -188,42 +182,6 @@ public class Game {
             }
         }
     }
-    /*
-     public void loop() {
-
-     //init fixed timestep
-     float delta;
-     float accumulator = 0f;
-     float interval = 1f / 30f;
-     float alpha;
-
-     // Run the rendering loop until the user has attempted to close
-     // the windowID or has pressed the ESCAPE key.
-     while (glfwWindowShouldClose(windowID) == GL_FALSE) {
-
-     // Get delta time and update the accumulator 
-     delta = timer.getDelta();
-     accumulator += delta;
-     input();
-     while (accumulator >= interval) {
-     // Get input, update and render
-
-     update();
-     timer.updateUPS();
-     accumulator -= interval;
-     }
-
-     // Calculate alpha value for interpolation 
-     alpha = accumulator / interval;
-
-     // Render game and update timer FPS 
-     render(alpha);
-     timer.updateFPS();
-
-     // Update timer 
-     timer.update();
-     }
-     }*/
 
     public void dispose() {
 
