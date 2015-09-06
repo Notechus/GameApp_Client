@@ -68,6 +68,10 @@ public class Vector3f {
         return this;
     }
 
+    public Vector3f translate(Vector3f vec) {
+        return add(vec);
+    }
+
     public Vector3f normalise() {
         float length = this.length();
         this.x /= length;

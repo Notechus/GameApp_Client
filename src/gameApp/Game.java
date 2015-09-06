@@ -33,9 +33,10 @@ public class Game {
     private Input input;
     private UDPClient client;
 
-    //to trace packet rate
-    private long firstPacketTime = 0L;
-    private int count = 0;
+    //to trace packet rate, FPS and UPS
+    private int packets = 0;
+    private int updates = 0;
+    private int frames = 0;
 
     //Timer class
     //private Timer timer;
@@ -125,10 +126,7 @@ public class Game {
         //TODO: recieve rep
         Packet p = new Packet("input", input);
         client.send(p);
-        ++count;
-        if (firstPacketTime == 0L) {
-            firstPacketTime = System.nanoTime();
-        }
+        packets++;
     }
 
     public void render() {
@@ -156,8 +154,6 @@ public class Game {
         double delta = 0.0;
         double ns = 1000000000.0 / 60.0;
         long timer = System.currentTimeMillis();
-        int updates = 0;
-        int frames = 0;
 
         while (glfwWindowShouldClose(windowID) == GL_FALSE) {
             long now = System.nanoTime();
@@ -176,9 +172,10 @@ public class Game {
 
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
-                System.out.println(updates + " UPS, " + frames + " FPS");
+                System.out.println(updates + " UPS " + frames + " FPS " + packets + " packets sent");
                 updates = 0;
                 frames = 0;
+                packets = 0;
             }
         }
     }
@@ -187,8 +184,7 @@ public class Game {
 
         //Stop UDP Client
         client.stop();
-
-        System.out.println("Sent " + count + " over " + (client.getLastSendTime() - firstPacketTime) / 1000000000 + " seconds");
+        //System.out.println("Sent " + count + " over " + (client.getLastSendTime() - firstPacketTime) / 1000000000 + " seconds");
     }
 
     public void run() {

@@ -11,15 +11,20 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Ball extends GameObject {
 
+    public float WIDTH = 0.05f;
+    public float HEIGHT = 0.05f;
+
     private VertexArrayObject vao;
 
     private Vector3f position;
 
+    private Vector3f movement;
+
     private float[] vertices = {
-        0.0f, 0.05f, 0f,
+        0.0f, HEIGHT, 0f,
         0.0f, 0.0f, 0f,
-        0.05f, 0.0f, 0f,
-        0.05f, 0.05f, 0f
+        WIDTH, 0.0f, 0f,
+        WIDTH, HEIGHT, 0f
     };
 
     private byte[] indices = new byte[]{
@@ -32,6 +37,9 @@ public class Ball extends GameObject {
         this.position = new Vector3f();
         vao = new VertexArrayObject(this.vertices, this.indices);
         this.setVaoID(vao.getVaoID());
+
+        //this.movement = new Vector3f(0.02f, 0.015f, 0.0f);
+        this.movement = new Vector3f(0.011f, 0.011f, 0.0f);
     }
 
     public VertexArrayObject getVao() {
@@ -50,13 +58,48 @@ public class Ball extends GameObject {
         this.position = position;
     }
 
+    public Vector3f getMovement() {
+        return movement;
+    }
+
+    public void setMovement(Vector3f movement) {
+        this.movement = movement;
+    }
+
+    public boolean checkBounds() {
+        //ball rebounds from walls
+        if (position.getY() <= -1.0f) {
+            System.out.println("Below game window!");
+            position.setY(-0.99f);
+            movement.setY(movement.getY() * (-1.0f));
+            return true;
+        }
+        if (position.getY() + HEIGHT >= 1.0f) {
+            System.out.println("Above game window!");
+            position.setY(0.99f - HEIGHT);
+            movement.setY(movement.getY() * (-1.0f));
+            return true;
+        }
+        if (position.getX() + WIDTH >= 1.0f) {
+            System.out.println("Too far right of game window!");
+            position.setX(0.99f - WIDTH);
+            movement.setX(movement.getX() * (-1.0f));
+            return true;
+        }
+        if (position.getX() <= -1.0f) {
+            System.out.println("Too far left of game window!");
+            position.setX(-0.99f);
+            movement.setX(movement.getX() * (-1.0f));
+            return true;
+        }
+
+        return false;
+    }
+
     public void update() {
-        /*if (MouseInput.isKeyDown(GLFW_MOUSE_BUTTON_1)) {
-         position.setY(position.getY() + 0.01f);
-         }
-         if (MouseInput.isKeyDown(GLFW_MOUSE_BUTTON_2)) {
-         position.setY(position.getY() - 0.01f);
-         }*/
+        if (!checkBounds()) {
+            this.position.translate(movement);
+        }
     }
 
 }

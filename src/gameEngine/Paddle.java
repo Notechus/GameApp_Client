@@ -16,14 +16,17 @@ public class Paddle extends GameObject {
 
     private Vector3f position;
 
+    public float WIDTH = 0.05f;
+    public float HEIGHT = 0.25f;
+
     //client-side
     private Input input;
 
     private float[] vertices = {
-        0.0f, 0.25f, 0f,
+        0.0f, HEIGHT, 0f,
         0.0f, 0.0f, 0f,
-        0.05f, 0.0f, 0f,
-        0.05f, 0.25f, 0f
+        WIDTH, 0.0f, 0f,
+        WIDTH, HEIGHT, 0f
     };
 
     private byte[] indices = new byte[]{
