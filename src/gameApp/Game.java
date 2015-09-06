@@ -2,6 +2,8 @@ package gameApp;
 
 import gameEngine.*;
 import input.*;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import networking.*;
 import utils.*;
 
@@ -10,12 +12,14 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 import java.nio.ByteBuffer;
+import org.lwjgl.BufferUtils;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Game {
 
@@ -173,6 +177,7 @@ public class Game {
             if (System.currentTimeMillis() - timer > 1000) {
                 timer += 1000;
                 System.out.println(updates + " UPS " + frames + " FPS " + packets + " packets sent");
+                //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 100, 100, 0, GL_RED, GL_BYTE, printText(updates + " UPS " + frames + " FPS " + packets + " packets sent"));
                 updates = 0;
                 frames = 0;
                 packets = 0;
@@ -180,11 +185,27 @@ public class Game {
         }
     }
 
-    public void dispose() {
+    public ByteBuffer printText(String text) {
+        int s = 256; //Take whatever size suits you.
+        BufferedImage b = new BufferedImage(s, s, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g = b.createGraphics();
+        g.drawString(text, 0, 0);
 
+        int co = b.getColorModel().getNumComponents();
+
+        byte[] data = new byte[co * s * s];
+        b.getRaster().getDataElements(0, 0, s, s, data);
+
+        ByteBuffer pixels = BufferUtils.createByteBuffer(data.length);
+        pixels.put(data);
+        pixels.rewind();
+
+        return pixels;
+    }
+
+    public void dispose() {
         //Stop UDP Client
         client.stop();
-        //System.out.println("Sent " + count + " over " + (client.getLastSendTime() - firstPacketTime) / 1000000000 + " seconds");
     }
 
     public void run() {
@@ -195,7 +216,7 @@ public class Game {
             running = true;
             loop();
 
-            //dispose shader
+            //dispose
             dispose();
 
             // Release window and window callbacks

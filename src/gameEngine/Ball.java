@@ -1,7 +1,6 @@
 package gameEngine;
 
 import graphicEngine.VertexArrayObject;
-import input.MouseInput;
 import math.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -69,25 +68,25 @@ public class Ball extends GameObject {
     public boolean checkBounds() {
         //ball rebounds from walls
         if (position.getY() <= -1.0f) {
-            System.out.println("Below game window!");
+            //System.out.println("Below game window!");
             position.setY(-0.99f);
             movement.setY(movement.getY() * (-1.0f));
             return true;
         }
         if (position.getY() + HEIGHT >= 1.0f) {
-            System.out.println("Above game window!");
+            //System.out.println("Above game window!");
             position.setY(0.99f - HEIGHT);
             movement.setY(movement.getY() * (-1.0f));
             return true;
         }
         if (position.getX() + WIDTH >= 1.0f) {
-            System.out.println("Too far right of game window!");
+            //System.out.println("Too far right of game window!");
             position.setX(0.99f - WIDTH);
             movement.setX(movement.getX() * (-1.0f));
             return true;
         }
         if (position.getX() <= -1.0f) {
-            System.out.println("Too far left of game window!");
+            //System.out.println("Too far left of game window!");
             position.setX(-0.99f);
             movement.setX(movement.getX() * (-1.0f));
             return true;
